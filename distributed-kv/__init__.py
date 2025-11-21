@@ -1,9 +1,15 @@
 """
-MIT 6.5840 Lab 2 - Distributed Key-Value Store Implementation in Python
+Distributed Key-Value Store Implementation
 """
 
-from . import kv
-from . import lock
+try:
+    # Try relative imports first (when used as a package)
+    from . import kv
+    from . import lock
+except ImportError:
+    # Fall back to absolute imports (when run directly or by pytest)
+    import kv
+    import lock
 
 __version__ = "1.0.0"
-__author__ = "Lab 2 Implementation"
+__author__ = "Distributed Systems Implementation"
