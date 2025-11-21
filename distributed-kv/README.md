@@ -1,11 +1,11 @@
-# Distributed Key-Value Store System Design
+# Distributed Key-Value Store
 
 ![System Architecture](./distributed_key_value_store_design.png)
 _System Overview: Distributed Key-Value Store with Fault-Tolerant Clients and Distributed Locking_
 
 ## 🎯 Overview
 
-A Python implementation of MIT 6.5840 Lab 2 featuring:
+A high-performance distributed key-value storage system built in Python featuring:
 
 - **Thread-safe KV server** with versioned writes
 - **Fault-tolerant client** with retry logic and exponential backoff
@@ -23,7 +23,7 @@ A Python implementation of MIT 6.5840 Lab 2 featuring:
 
 ```bash
 # Run demos
-cd lab2 && python run.py demo
+cd distributed-kv && python run.py demo
 
 # Verify implementation
 python verify.py
@@ -105,7 +105,7 @@ Lock Acquisition:     ~1-5ms (contention dependent)
 ### File Structure
 
 ```
-lab2/
+distributed-kv/
 ├── kv/           # Core KV service (server, client, types, errors)
 ├── lock/         # Distributed locking implementation
 ├── tests/        # Comprehensive test suite
@@ -122,7 +122,7 @@ This implementation demonstrates key distributed systems concepts:
 - **Concurrency control** (versioning, optimistic concurrency, at-most-once semantics)
 - **Network partition handling** (ErrMaybe semantics, duplicate detection)
 
-Perfect for learning MIT 6.5840 distributed systems principles in clean, well-documented Python code.
+Perfect for understanding distributed systems principles implemented in clean, well-documented Python code.
 
 **Responsibilities:**
 
@@ -267,7 +267,7 @@ def handle_request(self, request):
 ### File Structure
 
 ````
-lab2/
+distributed-kv/
 ├── kv/                     # Core KV service
 │   ├── server.py          # KVServer implementation
 │   ├── client.py          # Clerk with retry logic
@@ -302,7 +302,7 @@ pip install pytest
 ### Run Demos
 
 ```bash
-cd lab2
+cd distributed-kv
 python run.py demo
 ```
 
@@ -546,7 +546,7 @@ with Lock(clerk, "critical_section") as lock:
 
 ## 📋 Project Achievements
 
-### ✅ MIT 6.5840 Requirements Met
+### ✅ Distributed Systems Requirements Met
 
 - [x] Thread-safe KV server with versioned writes
 - [x] Conditional PUT semantics (version checking)
