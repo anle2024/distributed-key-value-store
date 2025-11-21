@@ -59,7 +59,7 @@ class Lock:
                         self.is_held = True
                     return True
 
-                # Lock exists, try to acquire it
+                # Lock exists, check if we can acquire it
                 try:
                     current_value, current_version = self.clerk.get(self.lock_name)
 
@@ -69,13 +69,20 @@ class Lock:
                             self.is_held = True
                         return True
 
-                    # Try to take the lock from current holder
-                    if self.clerk.conditional_put(
-                        self.lock_name, self.owner_id, current_version
-                    ):
-                        with self.local_lock:
-                            self.is_held = True
-                        return True
+                    # If lock is empty (released), try to acquire it
+                    if current_value == "":
+                        if self.clerk.conditional_put(
+                            self.lock_name, self.owner_id, current_version
+                        ):
+                            with self.local_lock:
+                                self.is_held = True
+                            return True
+
+                    # Lock is held by someone else - we cannot steal it
+                    # In a proper distributed lock, we must wait for release
+                    # If no timeout specified, add a brief delay to prevent busy waiting
+                    if timeout is None:
+                        time.sleep(self.retry_delay)
 
                 except ErrNoKey:
                     # Lock was deleted between checks, try creating again
@@ -93,8 +100,20 @@ class Lock:
                     # Lock doesn't exist, try creating again
                     continue
 
-            # Failed to acquire, backoff and retry
+            # Failed to acquire, check timeout before backoff
+            if timeout is not None:
+                elapsed = time.time() - start_time
+                if elapsed >= timeout:
+                    return False
+
+            # Backoff and retry
             time.sleep(self.retry_delay)
+
+            # Check timeout again after backoff
+            if timeout is not None:
+                elapsed = time.time() - start_time
+                if elapsed >= timeout:
+                    return False
 
     def release(self) -> None:
         """
