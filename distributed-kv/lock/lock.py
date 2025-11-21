@@ -4,7 +4,6 @@ Distributed lock implementation using KV service.
 
 import time
 import threading
-import uuid
 import sys
 import os
 from typing import Optional
@@ -26,7 +25,8 @@ class Lock:
         self.clerk = clerk
         self.lock_name = lock_name
         self.retry_delay = retry_delay
-        self.owner_id = str(uuid.uuid4())
+        # Use clerk's client_id so multiple lock instances from same clerk share ownership
+        self.owner_id = clerk.client_id
         self.is_held = False
         self.local_lock = threading.Lock()
 

@@ -87,8 +87,8 @@ class TestLockUnreliable:
         self.server.set_unreliable(True, 0.3)
 
         num_threads = 8
-        lock_acquisitions = []
-        total_attempts = []
+        lock_acquisitions: list[str] = []
+        total_attempts: list[int] = []
 
         def contending_client(client_id: int):
             attempts = 0
